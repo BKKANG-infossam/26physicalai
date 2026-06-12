@@ -176,6 +176,18 @@
                 grid-template-columns: 1fr;
             }
         }
+        /* 웹페이지 전체 또는 특정 영역 드래그 방지 */
+        body, pre, code {
+            -webkit-user-select: none;  /* 사파리 브라우저 */
+            -moz-user-select: none;     /* 파이어폭스 */
+            -ms-user-select: none;      /* IE/엣지 */
+            user-select: none;          /* 표준 크롬, 웨일 등 */
+        }
+        
+        /* 코드 박스 안의 텍스트가 선택되는 것을 원천 차단 */
+        pre {
+            cursor: default; /* 마우스 커서가 텍스트 선택 모양(I)으로 바뀌지 않도록 설정 */
+        }        
     </style>
 </head>
 <body>
@@ -382,6 +394,30 @@ void loop() {
         </section>
 
     </div>
+<script>
+    // 1. 마우스 우클릭(컨텍스트 메뉴) 차단
+    document.addEventListener('contextmenu', function(e) {
+        alert('영재원 실습 코드는 직접 타이핑하며 학습해야 합니다! (복사 금지)');
+        e.preventDefault();
+    });
 
+    // 2. 키보드 단축키 차단 (Ctrl+C, Ctrl+A, F12 등)
+    document.addEventListener('keydown', function(e) {
+        // Ctrl + C (복사) 막기
+        if (e.ctrlKey && e.key === 'c') {
+            alert('코드를 복사할 수 없습니다. 직접 타이핑해 보세요!');
+            e.preventDefault();
+        }
+        // Ctrl + A (전체 선택) 막기
+        if (e.ctrlKey && e.key === 'a') {
+            e.preventDefault();
+        }
+        // F12 (개발자 도구 소스 보기) 막기 -> 영재원 아이들은 우회할 수 있으므로 차단
+        if (e.key === 'F12') {
+            alert('개발자 도구 접근이 제한됩니다.');
+            e.preventDefault();
+        }
+    });
+</script>
 </body>
 </html>
