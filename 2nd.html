@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2주차 실습 안내 | 서울로봇고등학교 영재원 피지컬AI</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --text-color: #1e293b;
+            --code-background: #0f172a;
+            --accent-red: #ef4444;
+            --accent-yellow: #eab308;
+            --accent-green: #22c55e;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 800;
+        }
+
+        header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        section {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+        }
+
+        h2 {
+            color: #1e3a8a;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 10px;
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            color: #334155;
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 10px 12px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: white;
+        }
+        .bg-red { background-color: var(--accent-red); }
+        .bg-yellow { background-color: var(--accent-yellow); color: #000; }
+        .bg-green { background-color: var(--accent-green); }
+        .bg-blue { background-color: var(--primary-color); }
+        .bg-purple { background-color: #a855f7; }
+        .bg-dark { background-color: #64748b; }
+
+        pre {
+            background-color: var(--code-background);
+            color: #f8fafc;
+            padding: 1.2rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', Consolas, Monaco, monospace;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        code {
+            font-family: 'Fira Code', Consolas, Monaco, monospace;
+            background-color: #f1f5f9;
+            color: var(--accent-red);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        .highlight-add {
+            background-color: #1e3a1e;
+            display: block;
+            margin: 0 -1.2rem;
+            padding: 0 1.2rem;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        blockquote {
+            background-color: #f0fdf4;
+            border-left: 4px solid var(--accent-green);
+            margin: 1.5rem 0;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        blockquote p {
+            margin: 0;
+            color: #166534;
+            font-weight: 600;
+        }
+
+        .warning-box {
+            background-color: #fff7ed;
+            border-left: 4px solid var(--accent-yellow);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+            color: #9a3412;
+            font-weight: 600;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🤖 2주차: 실제 보드로 제어하는 피지컬 컴퓨팅 기초</h1>
+        <p>서울로봇고등학교 영재원 - 중등 로봇 영재 피지컬AI 실습 과정</p>
+    </header>
+
+    <div class="container">
+
+        <section>
+            <h2>1. 오늘 사용할 하드웨어 알아보기</h2>
+            <p>우리가 사용하는 <strong>Keyestudio ESP32 PLUS</strong> 보드는 기본 아두이노 우노(UNO)보다 연산 속도가 10배 이상 빠르고 메모리가 풍부하여 향후 인공지능(TinyML) 모델을 탑재할 수 있는 고성능 보드입니다.</p>
+            
+            <div class="warning-box">
+                ⚠️ 전압 주의! 조이스틱의 VCC는 반드시 보드의 5V가 아닌 3.3V 전원에 연결해야 전압 포화(Clipping) 현상 없이 부드러운 원형 데이터 수집이 가능합니다.
+            </div>
+
+            <h3>💡 조이스틱 안에는 뭐가 들어있을까?</h3>
+            <p>조이스틱의 이름에 붙은 <code>VRx</code>, <code>VRy</code>에서 <strong>VR</strong>은 <strong>Variable Resistor(가변저항)</strong>의 약자입니다. 조이스틱은 내부적으로 '전기 수도꼭지' 역할을 하는 가변저항 2개가 십자 형태로 겹쳐진 구조입니다. 손잡이를 밀면 저항이 변하고, 그에 따라 변화하는 <strong>전압의 크기</strong>를 보드가 숫자로 읽어내는 것입니다.</p>
+        </section>
+
+        <section>
+            <h2>2. 실물 보드 핀 연결 가이드 (배선표)</h2>
+            <p>보드를 가로로 두고(C타입 USB 포트가 왼쪽을 향하게) 위에서 똑바로 내려다보았을 때, 상단과 하단 노란색 암형(Female) 소켓 헤더의 표기를 보고 점퍼선을 정확하게 연결하세요.</p>
+            
+            <h3>🔴 신호등 LED 모듈 연결</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>신호등 LED 핀</th>
+                        <th>ESP32 Plus 보드 소켓 위치</th>
+                        <th>역할</th>
+                        <th>추천 선 색상</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>R (Red)</strong></td>
+                        <td>상단 검은색/노란색 소켓 <span class="badge bg-blue">IO13</span></td>
+                        <td>빨간색 LED 제어 (디지털 출력)</td>
+                        <td><span class="badge bg-red">빨간색</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Y (Yellow)</strong></td>
+                        <td>상단 검은색/노란색 소켓 <span class="badge bg-blue">IO12</span></td>
+                        <td>노란색 LED 제어 (디지털 출력)</td>
+                        <td><span class="badge bg-yellow">노란색</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>G (Green)</strong></td>
+                        <td>상단 검은색/노란색 소켓 <span class="badge bg-blue">IO14</span></td>
+                        <td>초록색 LED 제어 (디지털 출력)</td>
+                        <td><span class="badge bg-green">초록색</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>GND</strong></td>
+                        <td>브레드보드 공통 <span class="badge bg-dark">- (마이너스)</span> 레일</td>
+                        <td>그라운드 (전원 마이너스)</td>
+                        <td><span class="badge bg-dark">검은색</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🕹️ 조이스틱 모듈 연결</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>조이스틱 핀</th>
+                        <th>ESP32 Plus 보드 소켓 위치</th>
+                        <th>역할</th>
+                        <th>추천 선 색상</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SW</strong></td>
+                        <td>상단 왼쪽 독립 소켓 헤더 <span class="badge bg-blue">IO26</span></td>
+                        <td>내장 버튼 누름 감지 (디지털 입력)</td>
+                        <td><span class="badge bg-blue">파란색</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>VRX</strong></td>
+                        <td>우측 하단 ANALOG IN 소켓 <span class="badge bg-purple">IO36</span></td>
+                        <td>X축(좌우) 움직임 감지 (아날로그 입력)</td>
+                        <td><span class="badge bg-yellow">주황색</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>VRY</strong></td>
+                        <td>우측 하단 ANALOG IN 소켓 <span class="badge bg-purple">IO39</span></td>
+                        <td>Y축(상하) 움직임 감지 (아날로그 입력)</td>
+                        <td><span class="badge bg-purple">보라색</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>+5V (또는 VCC)</strong></td>
+                        <td>브레드보드 공통 <span class="badge bg-red">+ (플러스)</span> 레일</td>
+                        <td>모듈 전원 공급 (5V)</td>
+                        <td><span class="badge bg-red">빨간색</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>GND</strong></td>
+                        <td>브레드보드 공통 <span class="badge bg-dark">- (마이너스)</span> 레일</td>
+                        <td>그라운드 (전원 마이너스)</td>
+                        <td><span class="badge bg-dark">검은색</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>3. [예제 1] 조이스틱 값 시리얼 모니터 확인</h2>
+            <p>조이스틱의 X축, Y축 아날로그 센서 값을 읽어 시리얼 모니터에 출력하는 기본 코드입니다. 아날로그 입력 함수(<code>analogRead</code>)를 쓸 때는 <code>setup()</code> 안의 <code>pinMode</code> 설정을 생략할 수 있어 코드가 매우 간결해집니다.</p>
+            
+            <blockquote>
+                <p>💡 중요 포인트: 아두이노 우노와 달리 ESP32 보드는 아날로그 입력 해상도가 12비트(0 ~ 4095)입니다. 손잡이를 건드리지 않고 가만히 두었을 때 2000 안팎의 숫자가 출력되면 정상입니다!</p>
+            </blockquote>
+
+            <pre><code>int X = 36; // X축 핀 번호
+int Y = 39; // Y축 핀 번호
+
+void setup() {
+  Serial.begin(115200); // 고속 시리얼 통신 시작 (모니터 속도도 115200 설정!)
+}
+
+void loop() {
+  int vx = analogRead(X); // X축 값 읽기 (0 ~ 4095)
+  int vy = analogRead(Y); // Y축 값 읽기 (0 ~ 4095)
+
+  // 시리얼 모니터에 "X값 , Y값" 형태로 출력
+  Serial.print(vx);
+  Serial.print(" , ");
+  Serial.println(vy);
+
+  delay(100); // 눈으로 확인하기 편하게 0.1초마다 업데이트
+}</code></pre>
+        </section>
+
+        <section>
+            <h2>4. [예제 2] 조이스틱 방향에 따른 신호등 제어</h2>
+            <p>예제 1번 코드의 틀을 그대로 유지하면서, <strong>추가되는 코드</strong>를 작성해 봅시다. 조이스틱을 특정 방향으로 확실하게 밀었을 때(값의 경계가 500 미만이거나 3500 이상일 때) 각기 다른 색상의 신호등 LED가 켜집니다.</p>
+
+            <pre><code>int X = 36; 
+int Y = 39; 
+<div class="highlight-add">int RLED = 13; // [추가] 빨강 LED 핀
+int YLED = 12; // [추가] 노랑 LED 핀
+int GLED = 14; // [추가] 초록 LED 핀</div>
+void setup() {
+  Serial.begin(115200); 
+<div class="highlight-add">  pinMode(RLED, OUTPUT); // [추가] 출력 모드 설정
+  pinMode(YLED, OUTPUT); // [추가] 출력 모드 설정
+  pinMode(GLED, OUTPUT); // [추가] 출력 모드 설정</div>}
+
+void loop() {
+  int vx = analogRead(X); 
+  int vy = analogRead(Y); 
+
+<div class="highlight-add">  // [추가] 매 순간 모든 LED를 끄고 시작 (꺼짐 조건 자동 해결)
+  digitalWrite(RLED, 0);
+  digitalWrite(YLED, 0);
+  digitalWrite(GLED, 0);
+
+  // [추가] 조이스틱 방향 판별 (if - else if 구조 사용)
+  if (vx < 500) {
+    digitalWrite(YLED, 1); // 왼쪽으로 밀면 노란불 ON
+  } 
+  else if (vx > 3500) {
+    digitalWrite(GLED, 1); // 오른쪽으로 밀면 초록불 ON
+  } 
+  else if (vy > 3500) {
+    digitalWrite(RLED, 1); // 위로 밀면 빨간불 ON
+  }</div>
+  Serial.print(vx);
+  Serial.print(" , ");
+  Serial.println(vy);
+
+  delay(20); // [변경] 부드러운 반응을 위해 시간 단축
+}</code></pre>
+        </section>
+
+        <section style="border: 2px solid var(--primary-color);">
+            <h2>🔥 [최종 도전 과제] 버튼 우선순위 복합 제어 시스템</h2>
+            <p>오늘 배운 디지털 입력, 아날로그 입력, 제어문 알고리즘을 총동원하여 아래의 문제를 해결하는 스케치 코드를 직접 완성해 보세요!</p>
+            
+            <div style="background-color: #f1f5f9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <strong>📋 시스템 요구 조건 (시나리오)</strong>
+                <ul>
+                    <li>조이스틱의 내장 버튼(SW)을 <strong>누르면 조이스틱의 방향과 상관없이 무조건 빨간색 LED</strong>가 켜집니다.</li>
+                    <li>버튼을 <strong>누르지 않았을 때만</strong> 조이스틱 방향을 검사합니다.
+                        <ul>
+                            <li>조이스틱을 왼쪽으로 밀면 <strong>노란색 LED</strong>가 켜집니다.</li>
+                            <li>조이스틱을 오른쪽으로 밀면 <strong>초록색 LED</strong>가 켜집니다.</li>
+                        </ul>
+                    </li>
+                    <li>버튼도 누르지 않고, 조이스틱도 움직이지 않는 평상시(그 외의 경우)에는 <strong>모든 LED가 꺼집니다.</strong></li>
+                </ul>
+            </div>
+
+            <h3>💡 하드웨어 힌트 (역논리)</h3>
+            <p>조이스틱 버튼(SW)은 <code>INPUT_PULLUP</code> 상태입니다. 따라서 버튼을 <strong>클릭하여 누르고 있을 때 디지털 신호값은 <code>0 (LOW)</code></strong>이 되며, 손을 떼고 있을 때 <code>1 (HIGH)</code> 상태가 됩니다.</p>
+            
+            <h3>🧠 알고리즘 핵심 힌트 (우선순위)</h3>
+            <p>컴퓨터는 코드를 위에서부터 아래로 순서대로 검사하며 조건문을 실행합니다. <strong>가장 강력한 조건인 "버튼 누름"을 첫 번째 <code>if</code> 조건</strong>으로 배치하고, 조이스틱 판별 코드들은 <code>else if</code> 구조로 묶어야 버튼이 눌렸을 때 아래 조건들을 쳐다보지 않고 건너뛰게 됩니다.</p>
+        </section>
+
+    </div>
+
+</body>
+</html>
