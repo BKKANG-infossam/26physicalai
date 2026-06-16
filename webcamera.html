@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIoT 피지컬 AI 3주차 실습 제어기</title>
+    <!-- Tailwind CSS & ml5.js (AI) & p5.js CDN 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap');
+        body { font-family: 'Pretendard', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        /* p5.js가 만드는 캔버스를 지정된 구역에 깔끔하게 맞춤 */
+        #canvas-container canvas {
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border: 2px solid #334155;
+            max-width: 100% !important;
+            height: auto !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Chosen Palette: Midnight Slate with Emerald and Indigo UI Details -->
+    <!-- Application Structure Plan: A premium, ready-to-deploy single-page client interface designed for classroom usage.
+         Instead of hardcoding a single Teachable Machine URL, it provides a dynamic URL Input field. This allows the teacher to host a single copy of this webpage (on GitHub Pages or Localhost), and students can simply paste their own model URLs to initialize their custom AI classifiers. It integrates p5.js lifecycle hooks seamlessly into a Tailwind DOM layout. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900 border-b border-slate-800 py-4 px-6 shadow-md">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <span class="text-xs font-bold text-emerald-400 tracking-wider uppercase">서울로봇고등학교 영재교육원 피지컬 AI</span>
+                <h1 class="text-lg font-extrabold text-white mt-0.5">웹 브라우저 AI ✖ ESP32 PLUS 실시간 연동기</h1>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-[11px] text-slate-300 font-semibold">Web Serial API 수신 대기 중</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-6xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Side: Custom Teachable Machine Loader & Connection Settings -->
+        <section class="lg:col-span-4 flex flex-col gap-5">
+            
+            <!-- Model Setting Box -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+                <h3 class="text-sm font-bold text-white mb-2 flex items-center gap-2">🧠 1. AI 모델 주소 입력</h3>
+                <p class="text-[11px] text-slate-400 mb-4 leading-relaxed">
+                    티처블 머신에서 학습 완료 후 업로드한 공유 링크 주소(Sharable Link)를 붙여넣고 동적 로드 버튼을 누르세요.
+                </p>
+                <div class="space-y-3">
+                    <input type="text" id="tmUrlInput" placeholder="https://teachablemachine.withgoogle.com/models/..." 
+                           class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono transition-colors">
+                    <button id="loadModelBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-lg text-xs font-bold transition-all shadow-md">
+                        인공지능 모델 적용하기 ⚡
+                    </button>
+                </div>
+            </div>
+
+            <!-- Serial Connection Box -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm flex-grow flex flex-col justify-between">
+                <div>
+                    <h3 class="text-sm font-bold text-white mb-2 flex items-center gap-2">🔌 2. 하드웨어 포트 연결</h3>
+                    <p class="text-[11px] text-slate-400 mb-4 leading-relaxed">
+                        아두이노(ESP32 PLUS) 보드를 USB선으로 컴퓨터와 연결하고 아래 버튼을 누르세요.
+                    </p>
+                </div>
+                <div class="space-y-3">
+                    <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
+                        <span class="text-slate-400">보드 통신 속도:</span>
+                        <span class="font-mono text-emerald-400 font-bold">9600 bps</span>
+                    </div>
+                    <button id="connectSerialBtn" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 py-2.5 rounded-lg text-xs font-extrabold transition-all shadow-md">
+                        ESP32 PLUS 보드 연결하기 🔌
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Side: Camera View & Console Logs -->
+        <section class="lg:col-span-8 flex flex-col gap-5">
+            
+            <!-- Canvas/Webcam container -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm flex flex-col items-center">
+                <div class="w-full flex justify-between items-center mb-3">
+                    <h3 class="text-sm font-bold text-white">📷 실시간 AI 카메라 스트림</h3>
+                    <div id="aiStateBadge" class="bg-slate-950 text-slate-400 text-[10px] font-bold px-2 py-0.5 rounded border border-slate-800 uppercase">
+                        모델 로딩 대기 중
+                    </div>
+                </div>
+                
+                <!-- p5 Canvas Mount Point -->
+                <div id="canvas-container" class="w-full flex justify-center bg-slate-950 rounded-xl overflow-hidden py-2 min-h-[300px] items-center">
+                    <div id="canvasPlaceholder" class="text-slate-500 text-xs">먼저 모델 주소를 입력한 뒤 적용해 주세요.</div>
+                </div>
+            </div>
+
+            <!-- Terminal Logger Console Box -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+                <h3 class="text-sm font-bold text-white mb-2">📜 실시간 통신 시리얼 터미널</h3>
+                <div class="bg-slate-950 rounded-lg p-3 h-28 overflow-y-auto font-mono text-[10px] text-emerald-400 border border-slate-800 leading-relaxed space-y-1" id="serialConsole">
+                    <div>[SYSTEM] 웹 앱 구동을 시작했습니다. 모델 주소를 입력해 주시기 바랍니다.</div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-950 border-t border-slate-800 py-3 text-center text-xs text-slate-500">
+        © 2026 서울로봇고등학교 영재교육원 - 피지컬 AI 독립 배포 툴킷
+    </footer>
+
+    <!-- p5.js LifeCycle Script -->
+    <script>
+        let classifier;
+        let video;
+        let label = "모델 미로드";
+        let lastSentChar = '';
+        
+        // Serial Streams
+        let port;
+        let writer;
+
+        // Custom model variables
+        let tmModelURL = "";
+        let isModelLoaded = false;
+
+        // Dom Elements
+        const tmUrlInput = document.getElementById('tmUrlInput');
+        const loadModelBtn = document.getElementById('loadModelBtn');
+        const aiStateBadge = document.getElementById('aiStateBadge');
+        const connectSerialBtn = document.getElementById('connectSerialBtn');
+        const serialConsole = document.getElementById('serialConsole');
+        const canvasPlaceholder = document.getElementById('canvasPlaceholder');
+
+        // Restore URL from localStorage if exists
+        if(localStorage.getItem('tm_model_cache')) {
+            tmUrlInput.value = localStorage.getItem('tm_model_cache');
+        }
+
+        // Logger function
+        function printLog(text) {
+            const row = document.createElement('div');
+            row.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+            serialConsole.appendChild(row);
+            serialConsole.scrollTop = serialConsole.scrollHeight;
+        }
+
+        // Load Teachable Machine Dynamically
+        loadModelBtn.addEventListener('click', () => {
+            const url = tmUrlInput.value.trim();
+            if(!url || !url.startsWith('https://')) {
+                alert("정상적인 https 티처블 머신 주소를 입력해 주세요!");
+                return;
+            }
+            
+            localStorage.setItem('tm_model_cache', url);
+            tmModelURL = url;
+            printLog("인공지능 도구(Teachable Machine) 로딩 시도 중...");
+            loadModelBtn.disabled = true;
+            loadModelBtn.textContent = "가져오는 중... ⏳";
+            
+            // Build classification tool via ml5 library
+            try {
+                classifier = ml5.imageClassifier(tmModelURL + 'model.json', () => {
+                    printLog("인공지능 모델 로드 성공! 비디오 카메라 구동을 시작합니다.");
+                    aiStateBadge.textContent = "AI 준비 완료";
+                    aiStateBadge.className = "bg-emerald-950 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-800 uppercase";
+                    canvasPlaceholder.remove();
+                    
+                    isModelLoaded = true;
+                    // Start p5.js instance logic
+                    new p5(sketch, 'canvas-container');
+                });
+            } catch (err) {
+                printLog(`에러 발생: ${err.message}`);
+                loadModelBtn.disabled = false;
+                loadModelBtn.textContent = "인공지능 모델 적용하기 ⚡";
+            }
+        });
+
+        // Web Serial Connection
+        connectSerialBtn.addEventListener('click', async () => {
+            if(!navigator.serial) {
+                alert("크롬 브라우저 혹은 엣지 브라우저를 사용해 주세요. (Web Serial API 필요)");
+                return;
+            }
+
+            try {
+                port = await navigator.serial.requestPort();
+                await port.open({ baudRate: 9600 });
+                
+                const encoder = new TextEncoderStream();
+                const outputStream = encoder.writable;
+                writer = encoder.writable.getWriter();
+                
+                printLog("ESP32 PLUS 보드 연결 완료! (시리얼 전송 개시)");
+                connectSerialBtn.textContent = "보드 통신 활성화 상태 ✅";
+                connectSerialBtn.className = "w-full bg-slate-800 text-emerald-400 py-2.5 rounded-lg text-xs font-bold transition-all border border-emerald-500/30";
+                connectSerialBtn.disabled = true;
+            } catch (err) {
+                printLog(`보드 연결에 실패했습니다: ${err.message}`);
+                alert("연결에 실패했습니다! 아두이노 시리얼 모니터가 아직 열려있는지 확인하세요.");
+            }
+        });
+
+        // Safe async write command wrapper
+        async function sendArduinoCommand(currentChar) {
+            if(!writer) return;
+
+            if(currentChar !== lastSentChar) {
+                try {
+                    await writer.write(currentChar);
+                    printLog(`보드로 신호 송신: [ ${currentChar} ]`);
+                    lastSentChar = currentChar;
+                } catch (e) {
+                    printLog(`신호 송출 에러: ${e.message}`);
+                }
+            }
+        }
+
+        // p5.js Instance Closure Sketch definition
+        const sketch = (p) => {
+            p.setup = () => {
+                p.createCanvas(480, 360);
+                video = p.createCapture(p.VIDEO);
+                video.size(480, 360);
+                video.hide();
+                classifyVideo();
+            };
+
+            p.draw = () => {
+                p.background(15);
+                
+                // Show camera image horizontally flipped
+                p.push();
+                p.translate(p.width, 0);
+                p.scale(-1, 1);
+                p.image(video, 0, 0, p.width, p.height);
+                p.pop();
+
+                // UI Status Banner
+                p.fill(15, 23, 42, 210);
+                p.noStroke();
+                p.rect(0, p.height - 45, p.width, 45);
+                
+                p.fill(248, 250, 252);
+                p.textSize(14);
+                p.textStyle(p.BOLD);
+                p.textAlign(p.CENTER, p.CENTER);
+                p.text(`인식된 상태: ${label}`, p.width / 2, p.height - 22);
+
+                // Check active state
+                let signal = (label === 'LED_ON') ? '1' : '0';
+                sendArduinoCommand(signal);
+            };
+
+            function classifyVideo() {
+                // Classify via flipped feed capture logic
+                classifier.classify(video, (err, results) => {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+                    label = results[0].label;
+                    classifyVideo(); // Run recursively
+                });
+            }
+        };
+    </script>
+</body>
+</html>
