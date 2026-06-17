@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIoT 피지컬 AI 3주차 실습 제어기</title>
-    <!-- Tailwind CSS 및 p5.js, ml5.js 라이브러리 탑재 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
     <script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js"></script>
@@ -22,7 +21,6 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-    <!-- 상단 네비게이션 헤더 -->
     <header class="bg-slate-900 border-b border-slate-800 py-5 px-6 shadow-md">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
@@ -36,13 +34,10 @@
         </div>
     </header>
 
-    <!-- 메인 실습 레이아웃 -->
     <main class="flex-grow max-w-6xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        <!-- 왼쪽 사이드바: 설정 및 매핑 패널 -->
         <section class="lg:col-span-5 flex flex-col gap-6">
             
-            <!-- 1단계: 티처블 머신 모델 연결 -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col justify-between">
                 <div>
                     <h3 class="text-base sm:text-lg font-bold text-white mb-2.5 flex items-center gap-2">🧠 1. AI 모델 주소 입력</h3>
@@ -59,7 +54,6 @@
                 </div>
             </div>
 
-            <!-- 2단계: 클래스 이름 매핑 설정 (선생님의 아이디어 반영 구역) -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col justify-between">
                 <div>
                     <h3 class="text-base sm:text-lg font-bold text-white mb-2 flex items-center gap-2">🎛️ 2. 데이터-하드웨어 매핑 설정</h3>
@@ -68,19 +62,16 @@
                     </p>
                 </div>
                 <div class="space-y-4">
-                    <!-- 신호 0 매핑 -->
                     <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-lg border border-slate-800">
                         <span class="w-24 text-xs sm:text-sm font-bold text-amber-400">신호 '0' (노랑)</span>
                         <input type="text" id="classMap0" placeholder="예: 평상시" 
                                class="flex-grow bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-400">
                     </div>
-                    <!-- 신호 1 매핑 -->
                     <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-lg border border-slate-800">
                         <span class="w-24 text-xs sm:text-sm font-bold text-red-400">신호 '1' (빨강)</span>
                         <input type="text" id="classMap1" placeholder="예: 주먹" 
                                class="flex-grow bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-xs sm:text-sm text-white focus:outline-none focus:border-red-400">
                     </div>
-                    <!-- 신호 2 매핑 -->
                     <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-lg border border-slate-800">
                         <span class="w-24 text-xs sm:text-sm font-bold text-emerald-400">신호 '2' (초록)</span>
                         <input type="text" id="classMap2" placeholder="예: 손바닥" 
@@ -89,7 +80,6 @@
                 </div>
             </div>
 
-            <!-- 3단계: 아두이노 보드 연결 -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col justify-between">
                 <div>
                     <h3 class="text-base sm:text-lg font-bold text-white mb-2.5 flex items-center gap-2">🔌 3. 하드웨어 포트 연결</h3>
@@ -110,10 +100,8 @@
 
         </section>
 
-        <!-- 오른쪽 영역: 웹캠 화면 및 시리얼 로그 확인창 -->
         <section class="lg:col-span-7 flex flex-col gap-6">
             
-            <!-- 카메라 화면 구역 -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col items-center">
                 <div class="w-full flex justify-between items-center mb-3">
                     <h3 class="text-base sm:text-lg font-bold text-white">📷 실시간 AI 카메라 스트림</h3>
@@ -127,11 +115,13 @@
                 </div>
             </div>
 
-            <!-- 시리얼 콘솔 로그 구역 -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm">
-                <h3 class="text-base sm:text-lg font-bold text-white mb-2.5">📜 실시간 통신 시리얼 터미널</h3>
-                <div class="bg-slate-950 rounded-lg p-4 h-36 overflow-y-auto font-mono text-xs sm:text-sm text-emerald-400 border border-slate-800 leading-relaxed space-y-1.5" id="serialConsole">
-                    <div>[SYSTEM] 웹 앱 구동을 시작했습니다. 모델 주소와 매핑 단어를 입력해 주십시오.</div>
+                <div class="flex justify-between items-center mb-2.5">
+                    <h3 class="text-base sm:text-lg font-bold text-white">📜 실시간 통신 시리얼 터미널 (디버깅 모드)</h3>
+                    <button onclick="document.getElementById('serialConsole').innerHTML=''" class="text-xs bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded border border-slate-700 text-slate-400">로그 지우기</button>
+                </div>
+                <div class="bg-slate-950 rounded-lg p-4 h-48 overflow-y-auto font-mono text-xs sm:text-sm text-emerald-400 border border-slate-800 leading-relaxed space-y-1.5" id="serialConsole">
+                    <div>[SYSTEM] 디버깅 터미널 가동 완료.</div>
                 </div>
             </div>
 
@@ -143,12 +133,12 @@
         © 2026 서울로봇고등학교 영재교육원 - 피지컬 AI 독립 배포 툴킷
     </footer>
 
-    <!-- 자바스크립트 브라우저 실행 로직 -->
     <script>
         let classifier;
         let video;
         let label = "모델 미로드";
         let lastSentChar = '';
+        let lastDebugTime = 0; // 디버깅 로그 과부하 방지 타이머
         
         let port;
         let writer;
@@ -168,30 +158,32 @@
         const classMap1 = document.getElementById('classMap1');
         const classMap2 = document.getElementById('classMap2');
 
-        // 로컬 캐시 자동 불러오기
+        // 로컬 캐시 불러오기
         if(localStorage.getItem('tm_model_cache')) {
             tmUrlInput.value = localStorage.getItem('tm_model_cache');
         }
-        classMap0.value = localStorage.getItem('class_map_0') || "0";
-        classMap1.value = localStorage.getItem('class_map_1') || "1";
-        classMap2.value = localStorage.getItem('class_map_2') || "2";
+        classMap0.value = localStorage.getItem('class_map_0') || "평상시";
+        classMap1.value = localStorage.getItem('class_map_1') || "주먹";
+        classMap2.value = localStorage.getItem('class_map_2') || "손바닥";
 
-        // 매핑 변경 시 자동 저장
         [classMap0, classMap1, classMap2].forEach((input, index) => {
             input.addEventListener('input', () => {
                 localStorage.setItem(`class_map_${index}`, input.value.trim());
             });
         });
 
-        // 실시간 콘솔에 로그 출력 함수
         function printLog(text) {
             const row = document.createElement('div');
             row.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
             serialConsole.appendChild(row);
             serialConsole.scrollTop = serialConsole.scrollHeight;
+            
+            // 로그가 너무 많아지면 위에서부터 자동 삭제 (렉 방지)
+            if(serialConsole.children.length > 50) {
+                serialConsole.removeChild(serialConsole.firstChild);
+            }
         }
 
-        // 인공지능 모델 적용 버튼 클릭 시
         loadModelBtn.addEventListener('click', () => {
             const url = tmUrlInput.value.trim();
             if(!url || !url.startsWith('https://')) {
@@ -222,20 +214,19 @@
             }
         });
 
-        // 아두이노 보드 연결 버튼 클릭 시 (Web Serial Open)
         connectSerialBtn.addEventListener('click', async () => {
             if(!navigator.serial) {
-                alert("크롬(Chrome) 혹은 엣지(Edge) 브라우저를 사용해 주세요! (Web Serial API 필요)");
+                alert("크롬(Chrome) 혹은 엣지(Edge) 브라우저를 사용해 주세요!");
                 return;
             }
 
             try {
                 port = await navigator.serial.requestPort();
-                await port.open({ baudRate: 115200 }); // 초고속 통신속도 일치
+                await port.open({ baudRate: 115200 });
                 
-                const encoder = new TextEncoderStream();
-                const outputStream = encoder.writable;
-                writer = encoder.writable.getWriter();
+                // 🌟 중요 수정: writer 인코더를 스트림 규격에 맞게 바인딩
+                const encoder = new TextEncoder();
+                writer = port.writable.getWriter();
                 
                 printLog("ESP32 PLUS 보드 연결 완료! (시리얼 전송 개시 - 115200 bps)");
                 connectSerialBtn.textContent = "보드 통신 활성화 상태 ✅";
@@ -243,28 +234,30 @@
                 connectSerialBtn.disabled = true;
             } catch (err) {
                 printLog(`보드 연결에 실패했습니다: ${err.message}`);
-                alert("연결에 실패했습니다! 아두이노 IDE의 시리얼 모니터가 켜져있는지 확인하고 꺼주세요.");
+                alert("연결 실패! 아두이노 IDE 시리얼 모니터가 열려있는지 확인하세요.");
             }
         });
 
-        // 아두이노로 가공된 시그널을 발송하는 전선 함수
+        // 🌟 아두이노로 데이터를 확실하게 밀어내는 바이너리 인코딩 전송부
         async function sendArduinoCommand(currentChar) {
-            if(!writer) return; // 보드가 연결되지 않았으면 통과
+            if(!writer) return; 
 
-            // 직전에 전송한 값과 달라졌을 때만 1회 전송 (시리얼 전송 안정화 핵심)
+            // 상태가 변했을 때 확실하게 전송
             if(currentChar !== lastSentChar) {
                 try {
-                    // 아두이노의 parseInt() 혹은 수신 안정성을 위해 줄바꿈('\n')을 붙여 전송합니다.
-                    await writer.write(currentChar + "\n");
-                    printLog(`보드로 신호 송신: [ ${currentChar} ]`);
+                    const encoder = new TextEncoder();
+                    // 아두이노의 parseInt()나 readStringUntil 수신 안정성을 위해 문자열 끝에 줄바꿈('\n') 결합 후 바이트 배열 변환
+                    const data = encoder.encode(currentChar + "\n");
+                    await writer.write(data);
+                    
+                    printLog(`🔥 [신호 전송 성공] 데이터: [ ${currentChar} ] 가 전송되었습니다.`);
                     lastSentChar = currentChar;
                 } catch (e) {
-                    printLog(`신호 송출 에러: ${e.message}`);
+                    printLog(`❌ [송출 에러]: ${e.message}`);
                 }
             }
         }
 
-        // p5.js 그리기 및 판정 루프
         const sketch = (p) => {
             p.setup = () => {
                 p.createCanvas(480, 360);
@@ -277,14 +270,12 @@
             p.draw = () => {
                 p.background(15);
                 
-                // 화면 거울 모드 (미러링) 구현
                 p.push();
                 p.translate(p.width, 0);
                 p.scale(-1, 1);
                 p.image(video, 0, 0, p.width, p.height);
                 p.pop();
 
-                // 카메라 하단 불투명 안내 배너
                 p.fill(15, 23, 42, 220);
                 p.noStroke();
                 p.rect(0, p.height - 60, p.width, 60);
@@ -295,29 +286,41 @@
                 p.textAlign(p.CENTER, p.CENTER);
                 p.text(`인식된 상태: ${label}`, p.width / 2, p.height - 30);
 
-                // 🌟 [선생님의 최강 동적 매핑 알고리즘 구역] 
-                // UI 입력창에 학생들이 적은 텍스트와 현재 카메라 판정 클래스명을 매칭시킵니다.
                 let targetSignal = "";
                 
                 const val0 = classMap0.value.trim();
                 const val1 = classMap1.value.trim();
                 const val2 = classMap2.value.trim();
 
-                if (label === val0) {
-                    targetSignal = "0"; // 노란색 LED 매핑
-                } else if (label === val1) {
-                    targetSignal = "1"; // 빨간색 LED 매핑
-                } else if (label === val2) {
-                    targetSignal = "2"; // 초록색 LED 매핑
+                // 대소문자나 공백으로 인한 오류 방지를 위한 정제 비교
+                if (label.toLowerCase() === val0.toLowerCase() && val0 !== "") {
+                    targetSignal = "0";
+                } else if (label.toLowerCase() === val1.toLowerCase() && val1 !== "") {
+                    targetSignal = "1";
+                } else if (label.toLowerCase() === val2.toLowerCase() && val2 !== "") {
+                    targetSignal = "2";
                 }
 
-                // 타겟 시그널이 결정되었고 시리얼 연결이 되어있다면 보드로 즉시 전송
+                // 🌟 [실시간 매핑 매칭 디버거 콘솔 출력]
+                // 1.5초(1500ms)마다 현재 매핑 상태를 터미널 화면에 추적 및 덤프해줍니다.
+                let now = p.millis();
+                if (now - lastDebugTime > 1500) {
+                    if(!writer) {
+                        printLog(`⚠️ [보드 미연결 디버그] 현재 카메라 인식: "${label}" -> 설정된 매핑 데이터가 일치하지 않거나 보드가 연결되지 않았습니다.`);
+                    } else if (targetSignal === "") {
+                        printLog(`🔍 [매핑 불일치 디버그] 카메라 결과: "${label}" | 설정값: [0:${val0}, 1:${val1}, 2:${val2}] -> 일치하는 값이 없어 신호를 만들지 못함.`);
+                    } else {
+                        printLog(`📢 [정상 대기 디버그] 카메라 결과: "${label}" 일치 확인! -> 아두이노 대기 신호 상태: [ ${targetSignal} ]`);
+                    }
+                    lastDebugTime = now;
+                }
+
+                // 매칭된 숫자가 유효하면 시리얼 전송 실행
                 if (targetSignal !== "") {
                     sendArduinoCommand(targetSignal);
                 }
             };
 
-            // 실시간 비디오 이미지 분류 함수
             function classifyVideo() {
                 classifier.classify(video, (err, results) => {
                     if (err) {
@@ -325,7 +328,7 @@
                         return;
                     }
                     label = results[0].label;
-                    classifyVideo(); // 재귀 호출을 통해 실시간성 유지
+                    classifyVideo();
                 });
             }
         };
