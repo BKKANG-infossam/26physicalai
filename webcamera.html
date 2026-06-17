@@ -172,9 +172,9 @@
         if(localStorage.getItem('tm_model_cache')) {
             tmUrlInput.value = localStorage.getItem('tm_model_cache');
         }
-        classMap0.value = localStorage.getItem('class_map_0') || "평상시";
-        classMap1.value = localStorage.getItem('class_map_1') || "주먹";
-        classMap2.value = localStorage.getItem('class_map_2') || "손바닥";
+        classMap0.value = localStorage.getItem('class_map_0') || "0";
+        classMap1.value = localStorage.getItem('class_map_1') || "1";
+        classMap2.value = localStorage.getItem('class_map_2') || "2";
 
         // 매핑 변경 시 자동 저장
         [classMap0, classMap1, classMap2].forEach((input, index) => {
