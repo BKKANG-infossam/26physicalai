@@ -184,7 +184,7 @@
             }
         }
 
-        loadModelBtn.addEventListener('click', () => {
+        loadModelBtn.addEventListener('click', async () => { // <--- 여기에 async 추가
             const url = tmUrlInput.value.trim();
             if(!url || !url.startsWith('https://')) {
                 alert("정상적인 https 티처블 머신 주소를 입력해 주세요!");
@@ -193,23 +193,28 @@
             
             localStorage.setItem('tm_model_cache', url);
             tmModelURL = url;
-            printLog("인공지능 도구(Teachable Machine) 로딩 시도 중...");
+            printLog("인공지능 모델 로딩 시도 중...");
             loadModelBtn.disabled = true;
             loadModelBtn.textContent = "가져오는 중... ⏳";
-            
+        
             try {
-                // 티처블 머신에서 복사한 순수 URL 주소만 그대로 전달
-                    classifier = ml5.imageClassifier(tmModelURL, () => {
-                    printLog("인공지능 모델 로드 성공! 비디오 카메라 구동을 시작합니다.");
-                    aiStateBadge.textContent = "AI 준비 완료";
-                    aiStateBadge.className = "bg-emerald-950 text-emerald-400 text-xs font-bold px-3 py-1 rounded border border-emerald-800 uppercase tracking-wide";
-                    if(canvasPlaceholder) canvasPlaceholder.remove();
-                    
-                    isModelLoaded = true;
-                    new p5(sketch, 'canvas-container');
-                });
+                // [수정 핵심]: 콜백 방식을 버리고 await로 모델이 로드될 때까지 강제로 대기시킵니다.
+                // 만약 최신 버전 ml5라면 주소 그대로(tmModelURL) 쓰고, 
+                // 혹시 안 불러와지면 tmModelURL + 'model.json' 으로 테스트해보세요.
+                classifier = await ml5.imageClassifier(tmModelURL); 
+                
+                printLog("인공지능 모델 로드 성공! 비디오 카메라 구동을 시작합니다.");
+                aiStateBadge.textContent = "AI 준비 완료";
+                aiStateBadge.className = "bg-emerald-950 text-emerald-400 text-xs font-bold px-3 py-1 rounded border border-emerald-800 uppercase tracking-wide";
+                
+                if(canvasPlaceholder) canvasPlaceholder.remove();
+                
+                isModelLoaded = true;
+                new p5(sketch, 'canvas-container');
+        
             } catch (err) {
                 printLog(`에러 발생: ${err.message}`);
+                console.error(err); // 상세 에러를 콘솔에 출력
                 loadModelBtn.disabled = false;
                 loadModelBtn.textContent = "인공지능 모델 적용하기 ⚡";
             }
