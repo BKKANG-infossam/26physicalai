@@ -192,9 +192,13 @@
             }
             
             localStorage.setItem('tm_model_cache', url);
-           // 끝에 슬래시(/)가 없으면 붙이고, model.json이 없으면 자동으로 추가
-            let normalizedUrl = url.endsWith('/') ? url : url + '/';
-            tmModelURL = normalizedUrl.endsWith('model.json') ? normalizedUrl : normalizedUrl + 'model.json';
+            // model.json으로 이미 끝나면 그대로 사용, 아니면 슬래시 보정 후 model.json 추가
+            if (url.endsWith('model.json')) {
+                tmModelURL = url;
+            } else {
+                let normalizedUrl = url.endsWith('/') ? url : url + '/';
+                tmModelURL = normalizedUrl + 'model.json';
+            }
             printLog(`요청 주소 보정: ${tmModelURL}`);
             printLog("인공지능 모델 로딩 시도 중...");
             loadModelBtn.disabled = true;
@@ -214,6 +218,12 @@
                 
                 isModelLoaded = true;
                 new p5(sketch, 'canvas-container');
+
+                // 버튼을 '완료' 상태로 전환 (재적용은 가능하도록 disabled는 풀어둠)
+                loadModelBtn.disabled = false;
+                loadModelBtn.textContent = "모델 적용 완료 ✅";
+                loadModelBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-500');
+                loadModelBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-500');
         
             } catch (err) {
                 printLog(`에러 발생: ${err.message}`);
