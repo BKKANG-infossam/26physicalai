@@ -206,8 +206,6 @@
         
             try {
                 // [수정 핵심]: 콜백 방식을 버리고 await로 모델이 로드될 때까지 강제로 대기시킵니다.
-                // 만약 최신 버전 ml5라면 주소 그대로(tmModelURL) 쓰고, 
-                // 혹시 안 불러와지면 tmModelURL + 'model.json' 으로 테스트해보세요.
                 classifier = await ml5.imageClassifier(tmModelURL); 
                 
                 printLog("인공지능 모델 로드 성공! 비디오 카메라 구동을 시작합니다.");
