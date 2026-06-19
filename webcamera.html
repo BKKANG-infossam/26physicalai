@@ -276,6 +276,7 @@
         }
 
         const sketch = (p) => {
+            let squareCropGraphics; // 정사각형 crop용 오프스크린 그래픽 버퍼
             p.setup = () => {
                 p.createCanvas(480, 360);
                 video = p.createCapture(p.VIDEO);
@@ -339,7 +340,20 @@
             };
 
             function classifyVideo() {
-                classifier.classify(video, (err, results) => {
+                const size = Math.min(video.width, video.height);
+                const xOffset = (video.width - size) / 2;
+                const yOffset = (video.height - size) / 2;
+
+                if (!squareCropGraphics) {
+                    squareCropGraphics = p.createGraphics(size, size);
+                }
+                squareCropGraphics.copy(
+                    video,
+                    xOffset, yOffset, size, size,
+                    0, 0, size, size
+                );
+
+                classifier.classify(squareCropGraphics, (err, results) => {
                     if (err) {
                         console.error(err);
                         return;
