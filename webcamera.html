@@ -192,7 +192,10 @@
             }
             
             localStorage.setItem('tm_model_cache', url);
-            tmModelURL = url;
+           // 끝에 슬래시(/)가 없으면 붙이고, model.json이 없으면 자동으로 추가
+            let normalizedUrl = url.endsWith('/') ? url : url + '/';
+            tmModelURL = normalizedUrl.endsWith('model.json') ? normalizedUrl : normalizedUrl + 'model.json';
+            printLog(`요청 주소 보정: ${tmModelURL}`);
             printLog("인공지능 모델 로딩 시도 중...");
             loadModelBtn.disabled = true;
             loadModelBtn.textContent = "가져오는 중... ⏳";
