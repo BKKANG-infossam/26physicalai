@@ -306,7 +306,20 @@
                 p.textStyle(p.BOLD);
                 p.textAlign(p.CENTER, p.CENTER);
                 p.text(`인식된 상태: ${label}`, p.width / 2, p.height - 30);
-
+                // 🌟 [디버그] 분류기에 실제로 들어가는 정사각형 crop 이미지를 작게 미리보기
+                if (squareCropGraphics) {
+                    const previewSize = 110;
+                    p.push();
+                    p.stroke(250, 204, 21);
+                    p.strokeWeight(2);
+                    p.image(squareCropGraphics, p.width - previewSize - 10, 10, previewSize, previewSize);
+                    p.noStroke();
+                    p.fill(250, 204, 21);
+                    p.textSize(10);
+                    p.textAlign(p.CENTER, p.TOP);
+                    p.text("AI가 보는 화면", p.width - previewSize / 2 - 10, previewSize + 14);
+                    p.pop();
+                }
                 let targetSignal = "";
                 
                 const val0 = classMap0.value.trim();
